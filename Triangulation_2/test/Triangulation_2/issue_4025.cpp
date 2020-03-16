@@ -4,17 +4,17 @@
 #include <CGAL/Constrained_triangulation_plus_2.h>
 
 
-typedef CGAL::Exact_predicates_inexact_constructions_kernel                 K;
-typedef CGAL::Polygon_2<K>                                                Polygon_2;
-typedef CGAL::Exact_intersections_tag                                     Itag_;
-typedef CGAL::Constrained_Delaunay_triangulation_2<K,CGAL::Default, Itag_> CDT;
-typedef CGAL::Constrained_triangulation_plus_2<CDT>                       CDTP;
+using K = CGAL::Exact_predicates_inexact_constructions_kernel;
+using Polygon_2 = CGAL::Polygon_2<K>;
+using Itag_ = CGAL::Exact_intersections_tag;
+using  CDT = CGAL::Constrained_Delaunay_triangulation_2<K,CGAL::Default, Itag_>;
+using CDTP = CGAL::Constrained_triangulation_plus_2<CDT>;
 
-typedef CDTP::Point                                                       Point;
-typedef CDTP::Constraint_id                                               Cid;
-typedef CDTP::Vertex_handle                                               Vertex_handle;
-typedef CDTP::Constraint_id                                               Constraint_id;
-typedef CDTP::Vertices_in_constraint_iterator                             Vertices_in_constraint_iterator;
+using Point = CDTP::Point;
+using Cid = CDTP::Constraint_id;
+using Vertex_handle = CDTP::Vertex_handle;
+using Constraint_id = CDTP::Constraint_id;
+using Vertices_in_constraint_iterator = CDTP::Vertices_in_constraint_iterator;
 
 int countVertex(CDTP &cdtp, CDTP::Constraint_id id)
 {

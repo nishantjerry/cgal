@@ -257,7 +257,7 @@ Constrained_edges constrained_edges() const;
 /*!
 inserts point `p` and restores the status (constrained or not) of all 
 the touched edges. If present, `f` is used as an hint 
-for the location of `p`. 
+for the location of `p`.
 */ 
 Vertex_handle insert(Point p, Face_handle f = Face_handle() ); 
 
@@ -337,16 +337,16 @@ is_valid(bool verbose = false, int level = 0) const;
 }; /* end Constrained_triangulation_2 */
 
 /*!
-writes the triangulation as for `Triangulation_2<Traits,Tds>` and, for each face `f`, and integers `i=0,1,2`, 
+writes the triangulation as for `Triangulation_2<Traits,Tds>` and, for each face `f`, and integers `i=0,1,2`,
 writes "C" or "N" depending whether edge 
 `(f,i)` is constrained or not. 
 \relates Constrained_triangulation_2 
 */
 template <typename  Traits, typename Tds, typename Itag>
-std::ostream & operator<<(std::ostream& os, const Constrained_triangulation_2<Traits,Tds,Itag> &ct); 
+std::ostream & operator<<(std::ostream& os, const Constrained_triangulation_2<Traits,Tds,Itag> &ct);
 
 /*!
-reads a triangulation from stream `is` and assigns it to c`t`. Data in the stream must have the same format `operator<<` uses. 
+reads a triangulation from stream `is` and assigns it to c`t`. Data in the stream must have the same format `operator<<` uses.
 Note that `ct` is first cleared. 
 \relates Constrained_triangulation_2 
 */

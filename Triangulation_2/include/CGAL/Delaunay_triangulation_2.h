@@ -312,9 +312,8 @@ public:
     std::vector<Point> points (first, last);
     spatial_sort (points.begin(), points.end(), geom_traits());
     Face_handle f;
-    for (typename std::vector<Point>::const_iterator p = points.begin(), end = points.end();
-         p != end; ++p)
-      f = insert (*p, f)->face();
+    for (const Point& p : points)
+      f = insert (p, f)->face();
 
     return this->number_of_vertices() - n;
   }
@@ -349,12 +348,10 @@ private:
 
     Vertex_handle v_hint;
     Face_handle hint;
-    for (typename std::vector<std::size_t>::const_iterator
-      it = indices.begin(), end = indices.end();
-      it != end; ++it) {
-      v_hint = insert(points[*it], hint);
+    for (const std::size_t& it : indices) {
+      v_hint = insert(points[it], hint);
       if(v_hint!=Vertex_handle()) {
-        v_hint->info()=infos[*it];
+        v_hint->info()=infos[it];
         hint=v_hint->face();
       }
     }
@@ -2224,9 +2221,9 @@ move_if_no_collision(Vertex_handle v, const Point &p)
   faces_pt.reserve(16);
   do { faces_pt.push_back(fc); } while(++fc != done);
   std::size_t ss = faces_pt.size();
-  for(std::size_t k=0; k<ss; k++)
+  for(const auto& k : faces_pt)
   {
-    Face_handle f = faces_pt[k];
+    Face_handle f = k;
     int i = f->index(inserted);
     f->set_vertex(i, v);
   }
@@ -2331,8 +2328,8 @@ move_if_no_collision_and_give_new_faces(Vertex_handle v,
     if(well_oriented(v)) {
       std::set<Face_handle> faces_set;
       restore_edges(v, faces_set);
-      for(typename std::set<Face_handle>::iterator ib = faces_set.begin(),
-            iend = faces_set.end(); ib != iend; ib++) *oif++ = *ib;
+      for(const Face_handle& ib : faces_set)
+        *oif++ = ib;
       return v;
     }
     v->set_point(ant);
@@ -2445,9 +2442,9 @@ move_if_no_collision_and_give_new_faces(Vertex_handle v,
   faces_pt.reserve(16);
   do { faces_pt.push_back(fc); } while(++fc != done);
   int ss = faces_pt.size();
-  for(int k=0; k<ss; k++)
+  for(const auto& k : faces_pt)
   {
-    Face_handle f = faces_pt[k];
+    Face_handle f = k;
     int i = f->index(inserted);
     f->set_vertex(i, v);
   }
@@ -2455,9 +2452,8 @@ move_if_no_collision_and_give_new_faces(Vertex_handle v,
   v->set_face(inserted->face());
   this->delete_vertex(inserted);
 
-  for(typename std::set<Face_handle>::const_iterator ib = faces_set.begin(),
-        iend = faces_set.end(); ib != iend; ib++)
-    *oif++ = *ib;
+  for(const Face_handle&  ib : faces_set)
+    *oif++ = ib;
 
   return v;
 }

@@ -79,7 +79,7 @@ _test_cls_delaunay_triangulation_2( const Del & )
       Point(-36,323), Point(-80,315), Point(-91,312),
       Point(-125,300), Point(-165,280), Point(-195,260), Point(-204,253)
   };
-  for (m=0; m<28; m++) 
+  for (m=0; m<28; m++)
       T3.insert( Point(pt[m]) );
   assert( T3.is_valid() );
  
@@ -329,7 +329,7 @@ _test_cls_delaunay_triangulation_2( const Del & )
   TM_1.insert(points.begin(), points.end());
   Vertex_handle vTM_1;
   for(int i=0; i<5; i++) {
-    for(typename Del::Finite_vertices_iterator 
+    for(typename Del::Finite_vertices_iterator
          fvi = TM_1.finite_vertices_begin();
          fvi != TM_1.finite_vertices_end(); fvi++) {
       Point p = Point(rand()%30000, rand()%30000);

@@ -142,12 +142,11 @@ public:
       // Thanks to spatial sort, they are better hints than what the hierarchy
       // would give us.
       Face_handle hints[Triangulation_hierarchy_2__maxlevel];
-      for (typename std::vector<Point>::const_iterator p = points.begin(), end = points.end();
-              p != end; ++p)
+      for (Point& p : points)
       {
           int vertex_level = random_level();
 
-          Vertex_handle v = hierarchy[0]->insert (*p, hints[0]);
+          Vertex_handle v = hierarchy[0]->insert (p, hints[0]);
           hints[0] = v->face();
 
           Vertex_handle prev = v;
@@ -249,7 +248,7 @@ private:
   void add_hidden_vertices_into_map(Tag,
 				    std::map<Vertex_handle,Vertex_handle >& V)
   {
-    for (typename Tr_Base::Hidden_vertices_iterator 
+    for (typename Tr_Base::Hidden_vertices_iterator
 	   it=hierarchy[0]->hidden_vertices_begin(); 
 	 it != hierarchy[0]->hidden_vertices_end(); ++it) {
       if (it->up() != Vertex_handle()) V[ it->up()->down() ] = it;
@@ -315,7 +314,7 @@ copy_triangulation(const Triangulation_hierarchy_2<Tr_> &tr)
   // compute a map at lower level
   std::map<Vertex_handle, Vertex_handle > V;
   {
-    for( Finite_vertices_iterator it=hierarchy[0]->finite_vertices_begin(); 
+    for( Finite_vertices_iterator it=hierarchy[0]->finite_vertices_begin();
 	 it != hierarchy[0]->finite_vertices_end(); ++it) {
       if (it->up() != Vertex_handle()) V[ it->up()->down() ] = it;
     }
@@ -325,7 +324,7 @@ copy_triangulation(const Triangulation_hierarchy_2<Tr_> &tr)
 
   {
     for(int i=1;i<Triangulation_hierarchy_2__maxlevel;++i) {
-      for( Finite_vertices_iterator it=hierarchy[i]->finite_vertices_begin(); 
+      for( Finite_vertices_iterator it=hierarchy[i]->finite_vertices_begin();
 	   it != hierarchy[i]->finite_vertices_end(); ++it) {
 	// down pointer goes in original instead in copied triangulation
 	it->set_down(V[it->down()]);
@@ -381,7 +380,7 @@ Triangulation_hierarchy_2<Tr_>::
 ~Triangulation_hierarchy_2()
 {
   clear();
-  for(int i= 1; i<Triangulation_hierarchy_2__maxlevel; ++i){ 
+  for(int i= 1; i<Triangulation_hierarchy_2__maxlevel; ++i){
     delete hierarchy[i];
   }
 }
@@ -412,18 +411,18 @@ is_valid(bool verbose, int level) const
     result = result && hierarchy[i]->is_valid(verbose,level);
   }
     //verify that lower level has no down pointers
-  for( it = hierarchy[0]->finite_vertices_begin(); 
+  for( it = hierarchy[0]->finite_vertices_begin();
        it != hierarchy[0]->finite_vertices_end(); ++it) 
     result = result && ( it->down() ==   Vertex_handle());
   //verify that other levels have down pointer and reciprocal link is fine
   for(i=1;i<Triangulation_hierarchy_2__maxlevel;++i)
-    for( it = hierarchy[i]->finite_vertices_begin(); 
+    for( it = hierarchy[i]->finite_vertices_begin();
 	 it != hierarchy[i]->finite_vertices_end(); ++it) 
       result = result && 
 	       ( &*(it->down()->up())  ==  &*(it) );
   //verify that levels have up pointer and reciprocal link is fine
   for(i=0;i<Triangulation_hierarchy_2__maxlevel-1;++i)
-    for( it = hierarchy[i]->finite_vertices_begin(); 
+    for( it = hierarchy[i]->finite_vertices_begin();
 	 it != hierarchy[i]->finite_vertices_end(); ++it) 
       result = result && ( it->up() ==  Vertex_handle() ||
 	        &*it == &*(it->up())->down() );

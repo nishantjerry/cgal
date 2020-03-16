@@ -35,6 +35,8 @@
 #include <boost/container/flat_set.hpp>
 #endif
 
+#include <boost/range/adaptor/reversed.hpp>;
+
 
 namespace CGAL {
 
@@ -88,7 +90,7 @@ Default::Get< Tr_, Constrained_Delaunay_triangulation_2<
     typedef typename CDT::Vertex_handle Vertex_handle;
     typedef typename CDT::Face_handle Face_handle;
   private:
-    typedef boost::tuple<Vertex_handle, Vertex_handle, Vertex_handle> TFace; 
+    typedef boost::tuple<Vertex_handle, Vertex_handle, Vertex_handle> TFace;
     std::vector<TFace> faces;
     CDT& cdt;
 
@@ -110,10 +112,10 @@ Default::Get< Tr_, Constrained_Delaunay_triangulation_2<
     void
     write_faces(OutputIterator out)
     {
-      for(typename std::vector<TFace>::reverse_iterator 
-            it = faces.rbegin(); it != faces.rend(); ++it) { 
+      for(TFace& it : boost::adaptors::reverse(faces))
+      {
         Face_handle fh;
-        if(cdt.is_face(boost::get<0>(*it), boost::get<1>(*it), boost::get<2>(*it), fh)){
+        if(cdt.is_face(boost::get<0>(it), boost::get<1>(it), boost::get<2>(it), fh)){
           *out++ = fh;
         }
       }
@@ -706,10 +708,9 @@ public:
 				      hierarchy.vertices_in_constraint_end(cid));
 
     hierarchy.remove_constraint(cid);
-    for(typename std::list<Vertex_handle>::iterator it = vertices.begin(), 
-	  succ = it; 
-	++succ != vertices.end(); 
-	++it){
+    for(typename std::list<Vertex_handle>::iterator it = vertices.begin(),
+	  succ = it; ++succ != vertices.end(); ++it)
+    {
       if(! is_subconstraint(*it, *succ)){ // this checks whether other constraints pass
 	Face_handle fh;
 	int i;
@@ -967,9 +968,8 @@ public:
     spatial_sort (points.begin(), points.end(), geom_traits());
 
     Face_handle hint;
-    for (typename std::vector<Point>::const_iterator p = points.begin(), end = points.end();
-            p != end; ++p)
-        hint = insert (*p, hint)->face();
+    for (Point& p : points)
+        hint = insert (p, hint)->face();
 
     return this->number_of_vertices() - n;
   }

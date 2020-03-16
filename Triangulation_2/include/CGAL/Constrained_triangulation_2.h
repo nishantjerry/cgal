@@ -542,9 +542,8 @@ public:
       CGAL::spatial_sort (points.begin(), points.end(), geom_traits());
 
       Face_handle hint;
-      for (typename std::vector<Point>::const_iterator p = points.begin(), end = points.end();
-              p != end; ++p)
-          hint = insert (*p, hint)->face();
+      for (Point& p : points)
+          hint = insert (p, hint)->face();
 
       return number_of_vertices() - n;
     }
@@ -1139,7 +1138,7 @@ update_constraints( const List_edges &hole)
   for ( ; it != hole.end(); it ++) {
     f =(*it).first;
     i = (*it).second;
-    if ( f->is_constrained(i) ) 
+    if ( f->is_constrained(i) )
       (f->neighbor(i))->set_constraint(mirror_index(f,i),true);
     else (f->neighbor(i))->set_constraint(mirror_index(f,i),false);
   }
@@ -1301,7 +1300,7 @@ Constrained_triangulation_2<Gt,Tds,Itag>::
 is_valid(bool verbose, int level) const
 {
     bool result = Triangulation::is_valid(verbose,level);
-    for( All_faces_iterator it = all_faces_begin(); 
+    for( All_faces_iterator it = all_faces_begin();
 	                    it != all_faces_end() ; it++) {
       for(int i=0; i<3; i++) {
 	Face_handle n = it->neighbor(i);

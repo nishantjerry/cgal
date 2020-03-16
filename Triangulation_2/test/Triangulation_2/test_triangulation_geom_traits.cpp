@@ -206,7 +206,7 @@ main()
   };
   _test_cls_geom_traits( p8, Cls8() );
 
-  std::cout << "Testing Triangulation_test_traits for the requirements" 
+  std::cout << "Testing Triangulation_test_traits for the requirements"
 	    << std::endl;
   typedef CGAL::_Triangulation_test_traits Cls9;
   typedef Cls9::Point_2  Pt9;

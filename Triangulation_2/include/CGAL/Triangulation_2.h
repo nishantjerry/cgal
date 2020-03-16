@@ -56,6 +56,8 @@
 #include <CGAL/determinant.h>
 #endif // no CGAL_NO_STRUCTURAL_FILTERING
 
+#include<boost/range/counting_range.hpp>
+
 namespace CGAL {
 template < class Gt, class Tds > class Triangulation_2;
 template < class Gt, class Tds > std::istream& operator>>
@@ -668,7 +670,7 @@ std::ptrdiff_t insert(InputIterator first, InputIterator last,
 
     Vertex_handle v_hint;
     Face_handle hint;
-    for (std::size_t i = 0; i < points.size(); ++i ) {
+    for (const auto& i : boost::counting_range(0,points.size())) {
       v_hint = insert(points[i], hint);
       if(v_hint!=Vertex_handle()) {
         v_hint->info()=infos[i];
@@ -1616,8 +1618,8 @@ make_hole ( Vertex_handle v, std::list<Edge> & hole)
   } while(fc != done);
 
   std::size_t size = to_delete.size();
-  for(std::size_t i=0; i<size; i++) {
-    f = to_delete[i];
+  for(const auto& i : to_delete) {
+    f = i;
     delete_face(f);
   }
 }
@@ -1652,8 +1654,8 @@ make_hole(Vertex_handle v, std::list<Edge> & hole,
   } while(fc != done);
 
   std::size_t size = to_delete.size();
-  for(std::size_t i=0; i<size; i++) {
-    f = to_delete[i];
+  for(const auto& i : to_delete) {
+    f = i;
     faces_set.erase(f);
     delete_face(f);
   }
@@ -2243,9 +2245,9 @@ move_if_no_collision(Vertex_handle v, const Point &p)
   faces_pt.reserve(16);
   do { faces_pt.push_back(fc); } while(++fc != done);
   std::size_t ss = faces_pt.size();
-  for(std::size_t k=0; k<ss; k++)
+  for(const auto& k : faces_pt)
   {
-    Face_handle f = faces_pt[k];
+    Face_handle f = k;
     int i = f->index(inserted);
     f->set_vertex(i, v);
   }
@@ -2381,10 +2383,10 @@ move_if_no_collision_and_give_new_faces(Vertex_handle v,
   std::vector<Face_handle> faces_pt;
   faces_pt.reserve(16);
   do { faces_pt.push_back(fc); } while (++fc != done);
-  int ss = faces_pt.size();
-  for(int k=0; k<ss; k++)
+  //int ss = faces_pt.size();
+  for (const auto& k : faces_pt)
   {
-    Face_handle f = faces_pt[k];
+    Face_handle f = k;
     int i = f->index(inserted);
     f->set_vertex(i, v);
   }
@@ -2392,9 +2394,8 @@ move_if_no_collision_and_give_new_faces(Vertex_handle v,
   v->set_face(inserted->face());
   delete_vertex(inserted);
 
-  for(typename std::set<Face_handle>::iterator ib = faces_set.begin(),
-      iend = faces_set.end(); ib != iend; ib++)
-    *oif++ = *ib;
+  for (const auto& ib : faces_set)
+    *oif++ = ib;
 
   return v;
 }

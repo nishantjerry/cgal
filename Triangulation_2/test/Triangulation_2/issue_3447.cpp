@@ -1,15 +1,15 @@
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Constrained_triangulation_plus_2.h>
 
-typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
-typedef CGAL::Triangulation_vertex_base_2<K> Vb;
-typedef CGAL::Constrained_triangulation_face_base_2<K> Fb;
-typedef CGAL::Triangulation_data_structure_2<Vb, Fb>           TDS;
-typedef CGAL::Exact_predicates_tag                               Itag;
-typedef CGAL::Constrained_Delaunay_triangulation_2<K, TDS, Itag> Triangulation;
-typedef CGAL::Constrained_triangulation_plus_2<Triangulation> Delaunay;
+using K = CGAL::Exact_predicates_inexact_constructions_kernel;
+using Vb = CGAL::Triangulation_vertex_base_2<K>;
+using Fb = CGAL::Constrained_triangulation_face_base_2<K>;
+using TDS = CGAL::Triangulation_data_structure_2<Vb, Fb>;
+using Itag = CGAL::Exact_predicates_tag;
+using Triangulation = CGAL::Constrained_Delaunay_triangulation_2<K, TDS, Itag>;
+using Delaunay = CGAL::Constrained_triangulation_plus_2<Triangulation>;
 
-typedef K::Point_2 Point_2;
+using Point_2 = K::Point_2;
 
 int main()
 {

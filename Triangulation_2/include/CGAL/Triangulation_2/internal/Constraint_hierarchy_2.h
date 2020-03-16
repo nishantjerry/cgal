@@ -449,8 +449,8 @@ remove_constraint(T va, T vb){
   H_vertex_list *hvl = c_to_sc_it->second; 
   
   // We have to look at all subconstraints
-  for(H_vertex_it it = hvl->begin(), succ = it; 
-      ++succ != hvl->end(); 
+  for(H_vertex_it it = hvl->begin(), succ = it;
+      ++succ != hvl->end();
       ++it){
     typename H_sc_to_c_map::iterator scit = 
                                    sc_to_c_map.find(make_edge(*it,*succ));
@@ -458,8 +458,8 @@ remove_constraint(T va, T vb){
     H_context_list* hcl = scit->second;
 
     // and remove the contraint from the context list of the subcontraint
-    for(H_context_iterator ctit=hcl->begin(); ctit != hcl->end(); ctit++) {
-      if(ctit->enclosing == hvl){
+    for(auto& ctit :*hcl) {
+      if(ctit.enclosing == hvl){
 	    hcl->erase(ctit);
 		break;
       }
@@ -509,17 +509,17 @@ template <class T, class Compare, class Data>
 void Constraint_hierarchy_2<T,Compare,Data>::
 clear()
 {
-  H_c_iterator cit;
-  H_sc_iterator scit;
+  //H_c_iterator cit;
+  //H_sc_iterator scit;
   // clean and delete vertices lists
-  for(cit=c_to_sc_map.begin(); cit != c_to_sc_map.end();  cit++){
-    (*cit).second->clear();
-    delete (*cit).second;
+  for(auto& cit : c_to_sc_map){
+    (cit).second->clear();
+    delete (cit).second;
   }
   // clean and delete context lists
-  for(scit=sc_to_c_map.begin(); scit != sc_to_c_map.end(); scit++){
-    (*scit).second->clear();
-    delete (*scit).second;
+  for(auto& scit : sc_to_c_map){
+    (scit).second->clear();
+    delete (scit).second;
   }
   sc_to_c_map.clear();
   c_to_sc_map.clear();
@@ -569,11 +569,11 @@ remove_Steiner(T v, T va, T vb)
   CGAL_triangulation_assertion(hcl2 != nullptr);
 
   H_vertex_it      pos;
-  for(H_context_iterator ctit=hcl1->begin(); ctit != hcl1->end(); ctit++){
-    pos = ctit->pos;
+  for(auto& ctit : *hcl1){
+    pos = ctit.pos;
     if((*pos)==va) pos++;
-    pos = ctit->enclosing->erase(pos);
-    ctit->pos = --pos;
+    pos = ctit.enclosing->erase(pos);
+    ctit.pos = --pos;
   }
 
   sc_to_c_map.erase(make_edge(va,v));
@@ -606,11 +606,11 @@ add_Steiner(T va, T vb, T vc){
 
   H_vertex_it      pos;
   H_context  ctxt;
-  for(H_context_iterator ctit=hcl->begin(); ctit != hcl->end(); ctit++) {
+  for(auto& ctit : *hcl) {
     // insert vc in enclosing constraint
-    pos = ctit->pos;
+    pos = ctit.pos;
     ++pos;
-    pos = ctit->enclosing->insert(pos, vc);
+    pos = ctit.enclosing->insert(pos, vc);
     --pos;
     
     // set ctxt to the context of (vc,vb)
@@ -728,7 +728,7 @@ print() const
 //  for(; vnit != vertex_num.end(); vnit++) {
 //    vnit->second = ++num;
 //    std::cerr << "vertex num " << num  << " " << vnit->first->point()
-//	      << std::endl;
+//	      << std::endl;S
 //  }
 
   H_c_iterator cit=c_begin();
@@ -755,7 +755,7 @@ print() const
 			   hcl);
     H_constraint_it hcit=hcl.begin();
     std::cout << "  enclosing " ;
-    for(; hcit != hcl.end(); hcit++) { 
+    for(; hcit != hcl.end(); hcit++) {
       std::cout << vertex_num[hcit->first] <<" " 
 		<< vertex_num[hcit->second] ;
       std::cout <<  "   " ;

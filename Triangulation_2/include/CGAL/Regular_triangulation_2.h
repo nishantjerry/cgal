@@ -423,10 +423,8 @@ public:
                      geom_traits().construct_point_2_object()), geom_traits()));
 
     Face_handle hint;
-    for(typename std::vector<Weighted_point>::const_iterator p = points.begin(),
-         end = points.end();
-         p != end; ++p)
-      hint = insert(*p, hint)->face();
+    for(const Weighted_point& p : points)
+      hint = insert(p, hint)->face();
 
     return number_of_vertices() - n;
   }
@@ -494,14 +492,12 @@ private:
 
     Face_handle hint;
     Vertex_handle v_hint;
-    for(typename std::vector<std::size_t>::const_iterator
-      it = indices.begin(), end = indices.end();
-      it != end; ++it)
+    for(const std::size_t& it : indices)
     {
-      v_hint = insert(points[*it], hint);
+      v_hint = insert(points[it], hint);
 
       if(v_hint!=Vertex_handle()){
-        v_hint->info()=infos[*it];
+        v_hint->info()=infos[it];
         hint=v_hint->face();
       }
     }
@@ -1087,11 +1083,10 @@ show_face(Face_handle fh) const
 {
   Base::show_face(fh);
 
-  typename Vertex_list::iterator current;
+  //typename Vertex_list::iterator current;
   std::cerr << "  +++++>>>    ";
-  for(current= fh->vertex_list().begin();
-       current!= fh->vertex_list().end() ; current++) {
-        std::cerr <<"[ "<< ((*current)->point()) << " ] ,  ";
+  for(const auto& current : fh->vertex_list()){
+        std::cerr <<"[ "<< (current.point()) << " ] ,  ";
   }
   std::cerr <<std::endl;
 }
@@ -1431,9 +1426,8 @@ exchange_incidences(Vertex_handle va, Vertex_handle vb)
   }
 
   va->set_face(*(faces.begin()));
-  for(typename std::list<Face_handle>::iterator it = faces.begin();
-      it != faces.end(); it++){
-    Face_handle fh = *it;
+  for(const Face_handle& it : faces){
+    Face_handle fh = it;
     fh->set_vertex(fh->index(vb), va);
   }
   return;
@@ -1602,10 +1596,8 @@ remove(Vertex_handle v)
 
   if(hint != Face_handle()) hint = hint->neighbor(ihint);
 
-  for(typename Vertex_list::iterator i = to_reinsert.begin();
-      i != to_reinsert.end(); ++i)
-  {
-    hint = reinsert(*i, hint)->face();
+  for(const auto& i : to_reinsert)   {
+    hint = reinsert(i, hint)->face();
   }
 }
 
@@ -1795,8 +1787,8 @@ void
 Regular_triangulation_2<Gt,Tds>::
 set_face(Vertex_list& vl, const Face_handle& fh)
 {
-  for(typename Vertex_list::iterator it = vl.begin(); it != vl.end(); it++)
-   (*it)->set_face(fh);
+  for(const auto& it : vl)
+   (it)->set_face(fh);
 }
 
 // add the vertex_list of f2 and f3 to the point list of f1

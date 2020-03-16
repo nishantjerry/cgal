@@ -177,7 +177,7 @@ _test_cls_constrained_triangulation(const Triang &)
   Point(0,2), Point(1,2), Point(2,2), Point(3,2),Point(4,2),
   Point(4,3), Point(3,3), Point(2,3), Point(1,3),Point(0,3)
   };
-  for (m=0;m<19;m++) 
+  for (m=0;m<19;m++)
     l.push_back(Constraint(lpt[m],lpt[m+1]));
   Triang T2_2(l);
   assert( T2_2.dimension() == 2 );

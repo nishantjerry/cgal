@@ -86,17 +86,14 @@ _test_line_face_circulator( const Tri & )
  m.push_back(m1); m.push_back(m2); m.push_back(m3); m.push_back(m4);
 
  Tri tr;
- typename std::vector<Point>::iterator pit;
- typename std::vector<Point>::iterator qit;
- typename std::vector<Point>::iterator mit;
  typename std::vector<Point>::iterator tit;
  int i; 
  Locate_type lt;
 
  // insert points p - create Vertex_handle vector
  std::vector<Vertex_handle> v;
-  for(pit=p.begin() ; pit != p.end(); pit++) {
-    Vertex_handle vh = tr.insert(*pit);
+  for(Vertex_handle& pit : p) {
+    Vertex_handle vh = tr.insert(pit);
     v.push_back(vh);
  }
  tr.is_valid();
@@ -124,20 +121,20 @@ _test_line_face_circulator( const Tri & )
  //line_face_circulator creator from a vertex_handle and a point
 
 //locate vertices
- for(pit=p.begin() ; pit != p.end(); pit++) {
-   tr.locate(*pit,lt,i);
+ for(Point& pit : p) {
+   tr.locate(pit,lt,i);
    assert(lt == Tri::VERTEX);
  }
 
 // locate middle points
- for(mit=m.begin() ; mit != m.end(); mit++) {
-   tr.locate(*mit, lt,i);
+ for(Point& mit : m) {
+   tr.locate(mit, lt,i);
    assert(lt == Tri::EDGE);
  }
 
  // locate outside
- for(qit=q.begin() ; qit != q.end(); qit++) {
-   tr.locate(*qit, lt,i);
+ for(Point& qit : q) {
+   tr.locate(qit, lt,i);
    assert(lt == Tri::OUTSIDE_CONVEX_HULL);
  }
 
@@ -150,7 +147,7 @@ _test_line_face_circulator( const Tri & )
    tr.locate(*tit, lt,i);
    assert(lt == Tri::OUTSIDE_CONVEX_HULL);
  }
- 
+
  // test creator from two point
  lfc = tr.line_walk(p0,t0); assert(lfc != 0);
  lfc = tr.line_walk(p0,m4); assert(lfc == 0);

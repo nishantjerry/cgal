@@ -3,7 +3,7 @@
 #include <CGAL/Constrained_triangulation_plus_2.h>
 #include <CGAL/Projection_traits_xy_3.h>
 #include <cassert>
-
+#include<boost/range/counting_range.hpp>
 typedef CGAL::Exact_predicates_inexact_constructions_kernel EIK;
 typedef CGAL::Projection_traits_xy_3<EIK>                   K;
 typedef CGAL::Triangulation_vertex_base_2<K>                Vb;
@@ -33,16 +33,16 @@ int main()
                                     Point(232.69100000, 189.32500000, 0))); 
 
   Point p, q;
-  for(unsigned int i=0;i< segments.size(); i++){
-    p = segments[i].first;
-    q = segments[i].second;
+  for(const auto& i : segments){
+    p = i.first;
+    q = i.second;
     Vertex_handle v = cdt.insert(p);
     Vertex_handle w = cdt.insert(q);
     constraints.push_back(std::make_pair(v,w));
   }
-  for(unsigned int i=0; i < constraints.size(); ++i){
+  for(const auto& i : boost::counting_range(0,static_cast<int>(constraints.size()))){
     std::cerr << i << std::endl;
-    cdt.insert_constraint(constraints[i].first, constraints[i].second);
+    cdt.insert_constraint(constraints[i].first,constraints[i].second);
   }
   std::cerr << "done" << std::endl;
   return 0;

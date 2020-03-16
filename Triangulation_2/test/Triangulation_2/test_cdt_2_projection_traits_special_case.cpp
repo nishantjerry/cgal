@@ -27,7 +27,7 @@ template <typename Kernel, typename CDT_2_traits>
 bool test(std::string test_name)
 {
   std::cerr << "Testing " << test_name << std::endl;
-  const unsigned nb_input_points = sizeof(input)/sizeof(vec);
+  //const unsigned nb_input_points = sizeof(input)/sizeof(vec);
 
   typedef CGAL::Constrained_triangulation_face_base_2<CDT_2_traits>     CDT_2_fb;
   typedef CGAL::Triangulation_vertex_base_2<CDT_2_traits>               CDT_2_vb;
@@ -45,9 +45,9 @@ bool test(std::string test_name)
   typedef typename CDT_2::Vertex_handle Vh;
 
   Vh first, previous;
-  for(unsigned i = 0; i < nb_input_points; ++i)
+  for(const auto& i : input)
   {
-    typename Kernel::Point_3 p(input[i][0], input[i][1], input[i][2]);
+    typename Kernel::Point_3 p(i[0], i[1], i[2]);
     Vh current = cdt.insert(p);
     assert(current != previous);
     if(previous != Vh()) cdt.insert_constraint(previous, current);

@@ -58,12 +58,10 @@ namespace CGAL {
     vertices.resize(points.size());
 
     Face_handle hint;
-    for(typename Vertex_indices::const_iterator
-          it_pti = vertex_indices.begin(), end = vertex_indices.end();
-          it_pti != end; ++it_pti)
+    for(const auto& it_pti : vertex_indices)
     {
-      vertices[*it_pti] = t.insert(points[*it_pti], hint);
-      hint=vertices[*it_pti]->face();
+      vertices[it_pti] = t.insert(points[it_pti], hint);
+      hint=vertices[it_pti]->face();
     }
 
     for(IndicesIterator it_cst=indices_first, end=indices_beyond;

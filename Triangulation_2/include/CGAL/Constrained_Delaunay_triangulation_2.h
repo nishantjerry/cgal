@@ -282,9 +282,8 @@ public:
       std::vector<Point> points (first, last);
       spatial_sort (points.begin(), points.end(), geom_traits());
       Face_handle f;
-      for (typename std::vector<Point>::const_iterator p = points.begin(), end = points.end();
-              p != end; ++p)
-          f = insert (*p, f)->face();
+      for (const Point& p : points)
+          f = insert (p, f)->face();
 
       return number_of_vertices() - n;
     }
@@ -325,12 +324,10 @@ private:
 
     Vertex_handle v_hint;
     Face_handle hint;
-    for (typename std::vector<std::size_t>::const_iterator
-      it = indices.begin(), end = indices.end();
-      it != end; ++it){
-      v_hint = insert(points[*it], hint);
+    for (const std::size_t& it : indices){
+      v_hint = insert(points[it], hint);
       if (v_hint!=Vertex_handle()){
-        v_hint->info()=infos[*it];
+        v_hint->info()=infos[it];
         hint=v_hint->face();
       }
     }
@@ -565,7 +562,7 @@ public:
     e[2]= Edge(ni,cw(indn));
     e[3]= Edge(ni,ccw(indn));
 
-    for(i=0;i<4;i++) { 
+    for(i=0;i<4;i++) {
       ff=e[i].first;
       ii=e[i].second;
       eni=Edge(ff->neighbor(ii),mirror_index(ff,ii));
@@ -586,7 +583,7 @@ public:
     e[2]= Edge(ni,indn);
     e[3]= Edge(ni,cw(indn));
 
-    for(i=0;i<4;i++) { 
+    for(i=0;i<4;i++) {
       ff=e[i].first;
       ii=e[i].second;
       if (is_flipable(ff,ii)) {
@@ -690,9 +687,9 @@ void
 Constrained_Delaunay_triangulation_2<Gt,Tds,Itag>::
 flip_around(List_vertices& new_vertices)
 {
-  typename List_vertices::iterator itv=new_vertices.begin();
-  for( ; itv != new_vertices.end(); itv++) {
-    flip_around(*itv);
+ // typename List_vertices::iterator itv=new_vertices.begin();
+  for(const auto& itv : new_vertices){
+    flip_around(itv);
   }
   return;
 }

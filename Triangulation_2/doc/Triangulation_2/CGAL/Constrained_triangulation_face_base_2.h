@@ -4,7 +4,7 @@ namespace CGAL {
 /*!
 \ingroup PkgTriangulation2VertexFaceClasses
 
-The class `Constrained_triangulation_face_base_2` is the default model for the concept 
+The class `Constrained_triangulation_face_base_2` is the default model for the concept
 `ConstrainedTriangulationFaceBase_2` to be used as base face class 
 of constrained triangulations. 
 

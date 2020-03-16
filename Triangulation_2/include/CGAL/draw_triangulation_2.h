@@ -35,7 +35,7 @@ struct DefaultColorFunctorT2
   }
 };
 
-// Viewer class for T2 
+// Viewer class for T2
 template<class T2, class ColorFunctor>
 class SimpleTriangulation2ViewerQt : public Basic_viewer_qt
 {
