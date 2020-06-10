@@ -49,6 +49,8 @@
 #include <CGAL/Real_timer.h>
 #include <CGAL/demangle.h>
 
+#include <memory>
+
 
 namespace CGAL {
 
@@ -150,9 +152,9 @@ private:
 
   struct Scale
   {
-    Neighborhood* neighborhood;
-    Planimetric_grid* grid;
-    Local_eigen_analysis* eigen;
+    std::unique_ptr<Neighborhood> neighborhood;
+    std::unique_ptr<Planimetric_grid> grid;
+    std::unique_ptr<Local_eigen_analysis> eigen;
     float voxel_size;
 
     Scale (const PointRange& input, PointMap point_map,
@@ -163,9 +165,9 @@ private:
       CGAL::Real_timer t;
       t.start();
       if (lower_grid == nullptr)
-        neighborhood = new Neighborhood (input, point_map);
+        neighborhood = std::unique_ptr<Neighborhood>( new Neighborhood (input, point_map));
       else
-        neighborhood = new Neighborhood (input, point_map, voxel_size);
+        neighborhood = std::unique_ptr<Neighborhood>( new Neighborhood (input, point_map, voxel_size));
       t.stop();
 
       if (lower_grid == nullptr)
@@ -176,9 +178,9 @@ private:
       t.reset();
       t.start();
 
-      eigen = new Local_eigen_analysis
+      eigen = std::unique_ptr<Local_eigen_analysis>( new Local_eigen_analysis
         (Local_eigen_analysis::create_from_point_set
-         (input, point_map, neighborhood->k_neighbor_query(12), ConcurrencyTag(), DiagonalizeTraits()));
+         (input, point_map, neighborhood->k_neighbor_query(12), ConcurrencyTag(), DiagonalizeTraits())));
 
       float range = eigen->mean_range();
       if (this->voxel_size < 0)
@@ -190,31 +192,16 @@ private:
       t.start();
 
       if (lower_grid == nullptr)
-        grid = new Planimetric_grid (input, point_map, bbox, this->voxel_size);
+        grid = std::unique_ptr<Planimetric_grid>( new Planimetric_grid (input, point_map, bbox, this->voxel_size));
       else
-        grid = new Planimetric_grid(lower_grid);
+        grid = std::unique_ptr<Planimetric_grid>( new Planimetric_grid(lower_grid));
       t.stop();
       CGAL_CLASSIFICATION_CERR << "Planimetric grid computed in " << t.time() << " second(s)" << std::endl;
       t.reset();
     }
     ~Scale()
     {
-      if (neighborhood != nullptr)
-        delete neighborhood;
-      if (grid != nullptr)
-        delete grid;
-      delete eigen;
-    }
 
-    void reduce_memory_footprint(bool delete_neighborhood)
-    {
-      delete grid;
-      grid = nullptr;
-      if (delete_neighborhood)
-      {
-        delete neighborhood;
-        neighborhood = nullptr;
-      }
     }
 
     float grid_resolution() const { return voxel_size; }
@@ -224,7 +211,7 @@ private:
   };
 
   Iso_cuboid_3 m_bbox;
-  std::vector<Scale*> m_scales;
+  std::vector<std::unique_ptr<Scale> > m_scales;
 
   const PointRange& m_input;
   PointMap m_point_map;
@@ -265,7 +252,7 @@ public:
 
     m_scales.reserve (nb_scales);
 
-    m_scales.push_back (new Scale (m_input, m_point_map, m_bbox, voxel_size));
+    m_scales.push_back (std::unique_ptr<Scale>( new Scale (m_input, m_point_map, m_bbox, voxel_size)));
 
     if (voxel_size == -1.f)
       voxel_size = m_scales[0]->grid_resolution();
@@ -273,7 +260,7 @@ public:
     for (std::size_t i = 1; i < nb_scales; ++ i)
     {
       voxel_size *= 2;
-      m_scales.push_back (new Scale (m_input, m_point_map, m_bbox, voxel_size, m_scales[i-1]->grid));
+      m_scales.push_back (std::unique_ptr<Scale>( new Scale (m_input, m_point_map, m_bbox, voxel_size, m_scales[i-1]->grid)));
     }
     t.stop();
     CGAL_CLASSIFICATION_CERR << "Scales computed in " << t.time() << " second(s)" << std::endl;
@@ -288,13 +275,6 @@ public:
     clear();
   }
 
-  void reduce_memory_footprint()
-  {
-    for (std::size_t i = 0; i < m_scales.size(); ++ i)
-    {
-      m_scales[i]->reduce_memory_footprint(i > 0);
-    }
-  }
   /// \endcond
 
   /// \name Feature Generation
@@ -458,9 +438,7 @@ private:
 
   void clear()
   {
-    for (std::size_t i = 0; i < m_scales.size(); ++ i)
-      delete m_scales[i];
-    m_scales.clear();
+
   }
 
 #ifdef CGAL_CLASSIFICATION_USE_GRADIENT_OF_FEATURE
