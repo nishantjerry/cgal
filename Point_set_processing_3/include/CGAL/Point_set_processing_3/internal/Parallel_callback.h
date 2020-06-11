@@ -16,6 +16,8 @@
 
 #include <functional>
 
+#include <memory>
+
 #include <CGAL/thread.h>
 
 namespace CGAL {
@@ -25,11 +27,11 @@ namespace internal {
 class Parallel_callback
 {
   const std::function<bool(double)>& m_callback;
-  cpp11::atomic<std::size_t>* m_advancement;
-  cpp11::atomic<bool>* m_interrupted;
+  std::shared_ptr<cpp11::atomic<std::size_t> > m_advancement;
+  std::shared_ptr<cpp11::atomic<bool> > m_interrupted;
   std::size_t m_size;
   bool m_creator;
-  cpp11::thread* m_thread;
+  std::unique_ptr<cpp11::thread> m_thread;
 
   // assignment operator shouldn't be used (m_callback is const ref)
   Parallel_callback& operator= (const Parallel_callback&)
@@ -53,7 +55,7 @@ public:
     *m_advancement = advancement;
     *m_interrupted = interrupted;
     if (m_callback)
-      m_thread = new cpp11::thread (*this);
+      m_thread = std::unique_ptr<cpp11::thread>( new cpp11::thread (*this));
   }
 
   Parallel_callback (const Parallel_callback& other)
@@ -70,13 +72,7 @@ public:
 
   ~Parallel_callback ()
   {
-    if (m_creator)
-    {
-      delete m_advancement;
-      delete m_interrupted;
-    }
-    if (m_thread != nullptr)
-      delete m_thread;
+
   }
 
   cpp11::atomic<std::size_t>& advancement() { return *m_advancement; }
